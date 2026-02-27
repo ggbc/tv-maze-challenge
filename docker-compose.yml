@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  # PostgreSQL database container
+  db:
+    image: postgres:15-alpine
+    container_name: tv_challenge_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tvchallenge
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend application container
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tv_challenge_backend
+    ports:
+      - "7777:7777"
+    environment:
+      PORT: 7777
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/tvchallenge
+    depends_on:
+      db:
+        condition: service_healthy
+
+# Volume to persist database data between restarts
+volumes:
+  postgres_data:

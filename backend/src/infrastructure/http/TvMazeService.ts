@@ -4,8 +4,8 @@ import { Show } from '../../domain/entities/Show';
 import { Episode } from '../../domain/entities/Episode';
 
 /**
- * Implementação concreta do IShowService usando a API pública do TVMaze.
- * Fica na camada de infrastructure porque depende de um recurso externo (HTTP).
+ * Concrete implementation of IShowService using the public TVMaze API.
+ * It's in the infrastructure layer because it depends on an external resource (HTTP).
  */
 export class TvMazeService implements IShowService {
   private readonly baseUrl = 'https://api.tvmaze.com';
@@ -15,8 +15,8 @@ export class TvMazeService implements IShowService {
       params: { q: query },
     });
 
-    // A API retorna um array de objetos { score, show }
-    // Precisamos extrair apenas o show e mapear para nossa entity
+    // The API returns an array of objects { score, show }
+    // We need to extract only the show and map it to our entity
     return response.data.map((item: any) => this.mapToShow(item.show));
   }
 
@@ -31,9 +31,9 @@ export class TvMazeService implements IShowService {
   }
 
   /**
-   * Converte o formato da API TVMaze para nossa entity Show.
-   * Isolar esse mapeamento aqui garante que mudanças na API não
-   * vazam para o resto do sistema.
+   * Converts the TVMaze API format to our Show entity.
+   * Isolating this mapping here ensures that API changes don't
+   * leak into the rest of the system.
    */
   private mapToShow(data: any): Show {
     return {
@@ -52,9 +52,9 @@ export class TvMazeService implements IShowService {
   }
 
   /**
-   * Converte o formato da API TVMaze para nossa entity Episode.
-   * O campo "watched" começa sempre como false — o estado real
-   * vem do banco de dados, não da API.
+   * Converts the TVMaze API format to our Episode entity.
+   * The "watched" field always starts as false — the real state
+   * comes from the database, not the API.
    */
   private mapToEpisode(data: any, showId: number): Episode {
     return {

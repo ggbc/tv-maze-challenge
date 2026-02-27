@@ -15,7 +15,7 @@ export class AddComment {
 
   async execute(input: AddCommentInput): Promise<Comment> {
     if (!input.text || input.text.trim().length === 0) {
-      throw new Error('O comentário não pode ser vazio.');
+      throw new Error('Comment cannot be empty.');
     }
 
     return this.commentRepository.save({
