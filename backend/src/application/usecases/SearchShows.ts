@@ -2,8 +2,8 @@ import { Show } from '../../domain/entities/Show';
 import { IShowService } from '../services/IShowService';
 
 /**
- * Caso de uso: buscar séries pelo nome.
- * Delega a busca para o serviço externo (TVMaze).
+ * Use case: search shows by name.
+ * Delegates the search to the external service (TVMaze).
  */
 export class SearchShows {
   constructor(private readonly showService: IShowService) {}
