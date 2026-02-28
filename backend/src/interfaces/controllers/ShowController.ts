@@ -3,6 +3,7 @@ import { SearchShows } from '../../application/usecases/SearchShows';
 import { GetShowDetails } from '../../application/usecases/GetShowDetails';
 import { TvMazeService } from '../../infrastructure/http/TvMazeService';
 import { PostgresEpisodeRepository } from '../../infrastructure/database/PostgresEpisodeRepository';
+import { PostgresCommentRepository } from '../../infrastructure/database/PostgresCommentRepository';
 
 /**
  * Controller responsible for show routes.
@@ -11,6 +12,7 @@ import { PostgresEpisodeRepository } from '../../infrastructure/database/Postgre
 export class ShowController {
   private readonly searchShows: SearchShows;
   private readonly getShowDetails: GetShowDetails;
+  private readonly commentRepository: PostgresCommentRepository;  
 
   constructor() {
     const tvMazeService = new TvMazeService();
@@ -18,7 +20,22 @@ export class ShowController {
 
     this.searchShows = new SearchShows(tvMazeService);
     this.getShowDetails = new GetShowDetails(tvMazeService, episodeRepository);
+    this.commentRepository = new PostgresCommentRepository();        
   }
+
+  /**
+   * GET /shows/:id/comments
+   * Returns comments for a specific show.
+   */  
+    getComments = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id);
+        const comments = await this.commentRepository.findByShowId(id);
+        res.json(comments);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching comments.' });
+    }
+    };
 
   /**
    * GET /shows?q=query
